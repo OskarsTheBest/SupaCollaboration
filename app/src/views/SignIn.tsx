@@ -1,9 +1,9 @@
 /**
  * * Library imports
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 // ? https://www.npmjs.com/package/react-router-dom
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 // ? https://supabase.com/docs
 import { supabase } from '../lib/supabase.client'
 
@@ -14,11 +14,12 @@ function SignIn() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
-  //Popp up handling
+  //Pop up handling
   const [popupVisible, setPopupVisible] = useState(false)
   const [popupContent, setPopupContent] = useState('')
 
-
+  // after LOgin page navigation
+  const navigate = useNavigate();
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -33,15 +34,24 @@ function SignIn() {
         setPopupContent('Sign in failed. Please check your credentials.')
       } else {
         setPopupContent('Logged in successfully');
-       // TO DO fix it
-       // navigate("/profile");
+       // Redirects to profile after sign in
+        navigate("/profile");
       }
       setPopupVisible(true)
     } catch (error) {
       setPopupContent('An unexpected error occurred. Please try again.')
       setPopupVisible(true)
-    }
+    };
   }
+  useEffect(() => {
+    if (popupVisible) {
+      const timeoutId = setTimeout(() => {
+        setPopupVisible(false);
+      }, 15000);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [popupVisible]);
 
   return (
     <div className="w-full h-screen flex justify-center items-center 2xl:h-[80vh]">
@@ -94,14 +104,26 @@ function SignIn() {
         </p>
       </div>
       {popupVisible && (
-        <div className="popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-md">
-          <p className="text-center">{popupContent}</p>
+        <div className="top-20 left-0 w-full bg-white p-4 rounded-md shadow-md text-center fixed">
           <button
             onClick={() => setPopupVisible(false)}
-            className="block mx-auto mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
           >
-            Close
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M14.348 5.652a1 1 0 011.414 1.414L6.414 15H15a1 1 0 110 2H5a1 1 0 01-1-1V4a1 1 0 112 0v8.586l8.293-8.293z"
+                clipRule="evenodd"
+              />
+            </svg>
           </button>
+          <p>{popupContent}</p>
         </div>
       )}
     </div>

@@ -11,6 +11,7 @@ import HomePage from './views/Home'
 import ErrorPage from './views/Error'
 import TeamsPage from './views/Teams'
 import ProfilePage from './views/Profile'
+import SetupProfile from './views/SetupProfile'
 
 import SignInPage from './views/SignIn'
 import SignUpPage from './views/SignUp'
@@ -36,6 +37,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/setup-profile" element={<SetupProfile />} />
           <Route
             path="/email-confirmation"
             element={<EmailConfirmationPage />}
